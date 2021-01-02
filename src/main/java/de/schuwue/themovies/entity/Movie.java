@@ -179,4 +179,24 @@ public class Movie {
         }
         return downloadUrl;
     }
+
+    public URL getWebPlayerUrl() {
+        URL webPlayerUrl = null;
+        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        try {
+            webPlayerUrl = new URL(baseUrl + "/movies/" + id + "/play");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return webPlayerUrl;
+    }
+
+    public String getPresentationType() {
+        if (videoWidth >= 1200) {
+            return "hd";
+        } else {
+            return "sd";
+        }
+    }
+
 }

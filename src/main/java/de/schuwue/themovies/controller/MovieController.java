@@ -44,6 +44,11 @@ public class MovieController {
         return movieService.readMovies(pageRequest).toList();
     }
 
+    @RequestMapping(value = "movies/{id}/play", method = RequestMethod.GET)
+    public String getWebPlayer(@PathVariable int id) {
+        return "Web Player is not yet implemented. Otherwise I would have played movie id " + id + ":-(";
+    }
+
     @RequestMapping(value = "movie", method = RequestMethod.GET)
     public Movie showMovie(@RequestParam int tmdbId) {
         return movieService.showMovieByTmdbId(tmdbId);
