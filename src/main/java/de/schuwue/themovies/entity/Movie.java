@@ -59,6 +59,8 @@ public class Movie {
     }
 
     public Movie() {
+        this.createdAt = new Date();
+        this.updatedAt = this.createdAt;
     }
 
     public int getId() {

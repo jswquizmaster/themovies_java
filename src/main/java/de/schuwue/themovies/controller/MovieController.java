@@ -2,11 +2,22 @@ package de.schuwue.themovies.controller;
 
 import de.schuwue.themovies.entity.Movie;
 import de.schuwue.themovies.service.MovieService;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -23,6 +34,33 @@ public class MovieController {
     @RequestMapping(value = "movies", method = RequestMethod.POST)
     public String createMovie(@RequestBody Movie movie) {
         return movieService.createMovie(movie);
+    }
+
+    @RequestMapping(value = "movies/upload", method = RequestMethod.POST)
+    public String uploadFiles(HttpServletRequest request) {
+        ServletFileUpload upload = new ServletFileUpload();
+        try {
+            FileItemIterator iterStream = upload.getItemIterator(request);
+            while (iterStream.hasNext()) {
+                FileItemStream item = iterStream.next();
+                String name = item.getName();
+                String[] list = name.split("\\|");
+
+                InputStream stream = item.openStream();
+                if (!item.isFormField()) {
+                    // Process the InputStream
+                    movieService.uploadMovie(stream, list[1], list[2], Integer.parseInt(list[0]));
+                } else {
+                    String formFieldValue = Streams.asString(stream);
+                }
+            }
+        } catch (FileUploadException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "OK?";
     }
 
     @RequestMapping(value = "movies", method = RequestMethod.GET)
